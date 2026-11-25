@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎭 SHOWRAU 2026 – Controle de Som | SESI SALTO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Inline critical hint for first render */
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <!-- ========== HEADER ========== -->
+  <header>
+    <div class="header-content">
+      <div class="header-title">
+        <h1>🎭 SHOWRAU 2026</h1>
+        <span class="subtitle">SESI SALTO – Controle de Som & Roteiro</span>
+      </div>
+      <nav class="nav-tabs" aria-label="Navegação principal">
+        <button class="nav-tab active" data-tab="roteiro" id="tab-roteiro">🎭 Roteiro Teatral</button>
+        <button class="nav-tab" data-tab="apresentacoes" id="tab-apresentacoes">🎤 Apresentações (Fora do Roteiro)</button>
+      </nav>
+      <div class="header-controls">
+        <div class="status-bar">
+          <div class="status-item">
+            <span class="status-label">Cue:</span>
+            <span class="status-value" id="status-cue-counter">1 / 0</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Status:</span>
+            <span class="status-value waiting" id="status-state">Aguardando</span>
+          </div>
+        </div>
+        <button class="btn btn-reset" id="btn-reset" title="Resetar tudo (R)">🔄 Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== MAIN CONTAINER ========== -->
+  <div class="main-container" id="view-roteiro">
+
+    <!-- ===== ROTEIRO PANEL (LEFT) ===== -->
+    <div class="roteiro-panel" id="roteiro-container">
+      <!-- Rendered by JS -->
+    </div>
+
+    <!-- ===== SOUND CONTROL PANEL (RIGHT) ===== -->
+    <aside class="sound-panel" id="sound-panel">
+
+      <!-- Now Playing -->
+      <div class="now-playing" id="now-playing">
+        <div class="np-label">Agora Tocando</div>
+        <div class="np-title np-idle" id="np-title">Aguardando início...</div>
+        <div class="np-scene" id="np-scene"></div>
+
+        <!-- Audio Controls -->
+        <div class="audio-controls">
+          <button id="btn-prev" title="Cue anterior (←)">⏮</button>
+          <button id="btn-fade" class="btn-fade" title="Fade Out gradual (F)">🔉</button>
+          <button id="btn-stop" class="btn-stop" title="Parar imediato (Esc)">⏹</button>
+          <button id="btn-next" title="Próxima cue (→)">⏭</button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+          <div class="progress-bar-bg" id="progress-bar">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+          <div class="progress-time">
+            <span id="time-current">0:00</span>
+            <span id="time-total">0:00</span>
+          </div>
+        </div>
+
+        <!-- Volume -->
+        <div class="volume-control">
+          <span class="vol-icon">🔈</span>
+          <input type="range" id="vol-slider" min="0" max="1" step="0.05" value="0.8">
+          <span class="vol-value" id="vol-value">80%</span>
+        </div>
+      </div>
+
+      <!-- Cue List -->
+      <h3>Lista de Cues</h3>
+      <div class="cue-list" id="cue-list-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Keyboard Shortcuts -->
+      <div style="margin-top:24px; padding:14px; background:var(--bg-card); border-radius:var(--radius); font-size:0.8rem;">
+        <h3 style="margin-bottom:10px;">⌨️ Atalhos</h3>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 12px;color:var(--text-secondary);">
+          <kbd style="padding:2px 8px;background:var(--bg-highlight);border-radius:4px;font-size:0.75rem;text-align:center;">ESPAÇO</kbd>
+          <span>Tocar / Cortar cue</span>
+          <kbd style="padding:2px 8px;background:var(--bg-highlight);border-radius:4px;font-size:0.75rem;text-align:center;">F</kbd>
+          <span>Fade out gradual</span>
+          <kbd style="padding:2px 8px;background:var(--bg-highlight);border-radius:4px;font-size:0.75rem;text-align:center;">ESC</kbd>
+          <span>Parar imediato</span>
+          <kbd style="padding:2px 8px;background:var(--bg-highlight);border-radius:4px;font-size:0.75rem;text-align:center;">←</kbd>
+          <span>Cue anterior</span>
+          <kbd style="padding:2px 8px;background:var(--bg-highlight);border-radius:4px;font-size:0.75rem;text-align:center;">→</kbd>
+          <span>Próxima cue</span>
+          <kbd style="padding:2px 8px;background:var(--bg-highlight);border-radius:4px;font-size:0.75rem;text-align:center;">R</kbd>
+          <span>Resetar tudo</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ========== PRESENTATIONS CONTAINER (SEPARATED) ========== -->
+  <div class="presentations-panel hidden" id="view-apresentacoes">
+    <div id="presentations-container">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- ========== SPACEBAR HINT (FIXED) ========== -->
+  <div class="spacebar-hint" id="spacebar-hint">
+    <span class="key">ESPAÇO</span>
+    <span class="hint-text">Pressione para tocar: </span>
+    <span class="next-sound"></span>
+  </div>
+
+  <!-- ========== TOAST ========== -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ========== MOBILE PANEL TOGGLE ========== -->
+  <button class="toggle-panel-btn" id="toggle-panel" title="Painel de Som">🎵</button>
+
+  <!-- ========== JS ========== -->
+  <script src="js/app.js"></script>
+</body>
+</html>
